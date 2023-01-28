@@ -13,7 +13,10 @@ const Warehouse = () => {
   
   const[countries,setCounties]=useState()
   const[warehous,setwares]=useState(false)
+  const[shipcountry,setshipcountry]=useState("")
   const[waredata,setwareDAta]=useState()
+  const[toggleship,settoggleship]=useState(false)
+  const[shipitem,setshipitem]=useState("")
   const[renderCountries,setrnder]=useState(false)
   const email = useLocation();
   const navigate = useNavigate();
@@ -22,6 +25,7 @@ const Warehouse = () => {
   const [addnewcont,setnewcont]=useState("")
   const[ newwarevisible,setwarevisible]=useState(false)
   const [country , setcountry] = useState("");
+  const [shipitemquantity,toggleshipitem]=useState()
   const [product , setproduct] = useState("");
   const [id,setid] = useState("12");
   const [ProductName , setProductName] = useState("");
@@ -29,6 +33,13 @@ const Warehouse = () => {
   const [newproname,setnewproname]=useState("")
   const[newproquant,setnewproquant]=useState(12)
   const [ newPrductvisible,setnewprductvisible]=useState(false)
+  
+
+  const onship=(e)=>{
+    settoggleship(true)
+    setshipitem(e.target.value)
+    shipitemquantity(e.target.quantity)
+  }
   
   console.log(id)
 
@@ -330,27 +341,34 @@ catch (error) {
 //------------------------------------------------------------------------
 
 //--------------------------------ship-----------------------------------
-const ship=async ()=>{
+const ship=async (userEmail,country,id,product,quantity,destination,trackid)=>{
 const date=new Date()
 const date1=new Date()
 const shipdate=`${date.getDate()}${date.getMonth()}${date.getFullYear()}`
 const shipmentid=`${date1.getFullYear()}${date1.getMonth()}${date1.getDate()}${date1.getDay()}${date1.getHours()}${date1.getMinutes()}${date1.getSeconds()}`
 console.log(shipdate)
 try {
-  const response = await axios.post("http://localhost:5000/ship/nipun@gmail.com/India/2023028665618/oil",{
-    destination:"China",
+  const response = await axios.post(`http://localhost:5000/ship/${userEmail}/${country}/${id}/${product}`,{
+    destination:destination,
     shipdate:shipdate,
     shipmentid:shipmentid,
-    quantity:20
+    quantity:quantity,
+    trackid:`${id}${trackid}`
   });
   console.log(response.data);
 }
 catch (error) {
   console.log(error);
 }
-
 }
-
+const confirmship=async()=>{
+  const trackid=`${date.getFullYear()}${date.getMonth()}${date.getDate()}${date.getDay()}${date.getHours()}${date.getMinutes()}${date.getSeconds()}`
+  console.log(shipitemquantity,shipcountry)
+  await ship(userEmail,country,id,shipitem,shipitemquantity,shipcountry,trackid)
+  console.log("confirm ship")
+  settoggleship(false)
+  
+}
 //--------------------------------------------------------------------------------------------
 //------------------------------shipwed status--------------------------------------------------------
 const shippments =async ()=>{
@@ -575,7 +593,7 @@ const deleteProduct=async ()=>{
                 {/* <p className='p3'>{item.volume}</p> */}
               <button className='viewbtn' value={item.id}  onClick={editproduct}>Edit</button>
               <button className='delbtn'>Delete</button>
-              <button className='shipbtn' onClick={shipdata}>Ship</button>
+              <button className='shipbtn' value={item.item} quantity={item.quantity}onClick={onship}>Ship</button>
               </div>
               <hr />
                 </>
@@ -604,6 +622,14 @@ const deleteProduct=async ()=>{
         </div>
       </div>
     </div>
+      {toggleship&&
+    <div className='shipo'>
+
+        <div><h1>FROM</h1>
+      <p style={{color:"black"}}> {country},{id},Product:-{shipitem}</p></div>
+    <div><h1>To</h1><input type="text"onChange={(e)=>setshipcountry(e.target.value)} />,Quantity<input onChange={(e)=>{toggleshipitem(e.target.value)}}type="number" /></div>
+    <button onClick={confirmship}>Confirm</button></div>
+      }
     </>
   )
 }

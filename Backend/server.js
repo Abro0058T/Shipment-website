@@ -341,7 +341,7 @@ app.post("/ship/:id/:country/:uid/:product",(req,res)=>{
     password:"1234",
     database:"orders"
   });
-  const sqlInsert=`INSERT INTO  orderdata (fro,tom,warehouseid,date,country,quantity,status,owner) VALUES ('${country}','${req.body.destination}','${uid}','${req.body.shipdate}','China','${req.body.quantity}','pending','${id}');`
+  const sqlInsert=`INSERT INTO  orderdata (trackid,fro,tom,warehouseid,date,country,quantity,status,owner) VALUES ('${req.body.trackid}','${country}','${req.body.destination}','${uid}','${req.body.shipdate}','China','${req.body.quantity}','pending','${id}');`
   dbuser.query(sqlInsert,(err,result)=>{
     console.log("error",err);
     console.log("result",result);
