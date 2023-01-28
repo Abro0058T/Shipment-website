@@ -366,7 +366,7 @@ app.get("/shipment/:id",(req,res)=>{
   dbuser.query(sqlDelete,(err,result)=>{
     console.log("error",err);
     console.log("result",result);
-    res.send("200")
+    res.send(result)
   })
   // res.send(200)
 })

@@ -13,6 +13,7 @@ function App() {
         <Route exact path='/login' element={<Login/>}/>
         <Route exact path='/signup' element={<Signup/>}/>
         <Route exact path='/ware' element={<Warehouse/>}/>
+        {/* <Route exact path='/shipment' element={<Warehouse/>}/> */}
       </Routes>
     </div>
   );

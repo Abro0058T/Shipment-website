@@ -3,6 +3,7 @@ import logo from "../../assests/logo.png";
 import Home from "../../assests/Home.png";
 import "./Ware.css"
 import axios from 'axios';
+import Select from "react-dropdown-select";
 import { useLocation } from 'react-router-dom';
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
@@ -11,7 +12,18 @@ import { useNavigate } from 'react-router-dom';
 
 const Warehouse = () => {
   
-  const[countries,setCounties]=useState()
+  const options = [
+    { 
+      value: 1,
+      label: "Leanne Graham"
+    },
+    {
+      value:  2,
+      label: "Ervin Howell"
+    }
+  ];
+   const[countries,setCounties]=useState()
+  const[valueshipwindow,setshipwindow]=useState(false)
   const[warehous,setwares]=useState(false)
   const[shipcountry,setshipcountry]=useState("")
   const[waredata,setwareDAta]=useState()
@@ -33,7 +45,10 @@ const Warehouse = () => {
   const [newproname,setnewproname]=useState("")
   const[newproquant,setnewproquant]=useState(12)
   const [ newPrductvisible,setnewprductvisible]=useState(false)
+
+const shipmentEdit=()=>{
   
+}
 
   const onship=(e)=>{
     settoggleship(true)
@@ -180,8 +195,26 @@ await getWarehouses(userEmail,country)
   ]);
 //-------------------------------------------------------------------------------
 //-------------------------------------------------------------------------------
-//-------------------------------------------------------------------------------
+//--------------------------------Shipment-----------------------------------------------
 
+
+const shipment =async(userEmail)=>{
+  try{
+    const response=await axios.get(`http://localhost:5000/shipment/${userEmail}`)
+    return response
+  }
+  catch(error){
+    console.log("error",error)
+  }
+}
+const [datashipment,setdatashipment]=useState([])
+const shipwindow=async()=>{
+  setshipwindow(true)
+  const data=await  shipment(userEmail)
+  console.log(data.data)
+  setdatashipment(data.data)
+  setshipwindow(true)
+}
 
 const date=new Date();
 const  clickHandle= async ()=>{
@@ -449,6 +482,8 @@ const deleteProduct=async ()=>{
 
   return (
     <>
+    
+ 
     <div className='warehouse'>
 
       <div className="side-bar">
@@ -460,7 +495,7 @@ const deleteProduct=async ()=>{
             <div className="ulll">
                 <ul>
                     <h4 onClick={warechange}>Warehouses</h4>
-                    <h4>Shipments</h4>
+                    <h4 onClick={shipwindow}>Shipments</h4>
                     <h4>Oders</h4>
                     <h4>Make an Order</h4>
                 </ul>
@@ -622,6 +657,39 @@ const deleteProduct=async ()=>{
         </div>
       </div>
     </div>
+    <div className="dataship">
+    <div>
+                    <p>trackid</p>
+                    <p>fro</p>
+                    <p>tom</p>
+                    <p>warehouseid</p>
+                    <p>date</p>
+                    <p>country</p>
+                    <p>quantity</p>
+                    <p>status</p>
+                    <p>owner</p>
+                    </div>
+    {
+            valueshipwindow&&
+              datashipment.map((item)=>{
+                return(
+                    <div>
+                    <p>{item.trackid}</p>
+                    <p>{item.fro}</p>
+                    <p>{item.tom}</p>
+                    <p>{item.warehouseid}</p>
+                    <p>{item.date}</p>
+                    <p>{item.country}</p>
+                    <p>{item.quantity}</p>
+                    <p>{item.status}</p>
+                    <p>{item.owner}</p>
+                    <button onClick={shipmentEdit}>Edit</button>
+                    </div>
+                )
+              }
+              )
+            }
+            </div>
       {toggleship&&
     <div className='shipo'>
 
